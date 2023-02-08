@@ -1,0 +1,47 @@
+github url: https://github.com/vigneshSs-07/Googl...
+
+Resources:
+
+ https://cloud.google.com/dataproc/doc...
+ https://github.com/GoogleCloudDatapro...
+ https://cloud.google.com/sdk/gcloud/r...
+
+command to install dataproc: python3 -m pip install google-cloud-dataproc
+
+#Command to submit the pyspark job
+
+gcloud dataproc jobs submit pyspark readfrombq.py --cluster=dataproc-demo1 --region=us-east1 --jars=gs://spark-lib/bigquery/spark-bigquery-latest.jar
+
+#start a cluster using the gcloud CLI
+
+CLUSTER_NAME=dataproc-demo1 REGION=us-east1
+gcloud dataproc clusters start ${CLUSTER_NAME} --region=${REGION}
+
+#Command to create single node cluster with disk size configuration
+
+CLUSTER_NAME=dataproc-demo2 REGION=us-east1 
+gcloud dataproc clusters create ${CLUSTER_NAME} --region ${REGION} --single-node --master-machine-type n1-standard-2 --master-boot-disk-size 500 --image-version 2.0-debian10 --project learngcp-ace-guide-342819 --initialization-actions gs://goog-dataproc-initialization-actions-${REGION}/connectors/connectors.sh --metadata bigquery-connector-version=1.2.0 --metadata spark-bigquery-connector-version=0.21.0
+
+#stop a cluster using the gcloud CLI
+
+CLUSTER_NAME=dataproc-demo1 REGION=us-east1
+gcloud dataproc clusters stop ${CLUSTER_NAME} --region=${REGION}
+
+Apache Beam - Playlist
+https://youtube.com/playlist?list=PLA...
+
+Upload folders and files to Cloud Storage bucket using gcloud CLI tool
+https://www.youtube.com/watch?v=274Ug...
+
+
+example:
+step 1 : upload the jar file in the bucket
+
+pyspark --jars gs://dataproc_test_bucket/spark-2.4-bigquery-0.28.0-preview.jar --master yarn
+
+ord=spark.read.format("bigquery").option('table','expanded-nebula-377112.ramesh.orders').load()
+
+cust=spark.read.orc("gs://files_stage")
+
+joinedDF=ord.join(cust,ord.order_id==cust.id,"inner")
+joinedDF.write.format("bigquery").mode("append").option("temporaryGcsBucket","dataproc_test_bucket/temp").option("table","expanded-nebula-377112.ramesh.OrderProduct").save()
